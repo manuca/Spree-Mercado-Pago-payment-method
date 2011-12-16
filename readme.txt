@@ -7,6 +7,8 @@ Config
 - Copy the files inside 'lib/' make sure they are required on initialization.
 - Add Spree::Config.set(:allow_guest_checkout =>  false) because we need
   an identified user to review the cart.
+- In my app I did an override of /app/views/users/show.html.erb so that pending payments of this payment method
+  can be payed (with a link to the mercado_pago_button route) if you need this take a look at: https://gist.github.com/1486666
 
 Pending work
 ============
