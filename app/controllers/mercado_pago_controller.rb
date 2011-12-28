@@ -52,8 +52,8 @@ class MercadoPagoController < Spree::BaseController
   def config_options
     @config_options = Hash.new
     @config_options[:external_reference] = @order.number
-    @config_options[:back_urls] = {:success => "http://127.0.0.1:3000/mercado_pago/success", :pending => "http://127.0.0.1:3000/mercado_pago/pending"}
-    # @config_options[:back_urls] = {:success => mercado_pago_success_url, :pending => mercado_pago_pending_url, :failure => mercado_pago_failure_url}
+    # @config_options[:back_urls] = {:success => "http://127.0.0.1:3000/mercado_pago/success", :pending => "http://127.0.0.1:3000/mercado_pago/pending"}
+    @config_options[:back_urls] = {:success => mercado_pago_success_url, :pending => mercado_pago_pending_url, :failure => mercado_pago_failure_url}
     @config_options[:items] = Array.new
 
     @order.line_items.each do |li| 
