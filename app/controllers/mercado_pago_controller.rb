@@ -71,7 +71,6 @@ class MercadoPagoController < Spree::BaseController
     client_id     = @order.payment_method.preferred_client_id
     client_secret = @order.payment_method.preferred_client_secret
 
-    # {:client_id => 3274, :client_secret => 'phEqZEbzktzHtDIbYF1W1YOATln3Xo26'},
     response = RestClient.post 'https://api.mercadolibre.com/oauth/token',
       {:grant_type => 'client_credentials', :client_id => client_id, :client_secret => client_secret},
       :content_type=> "application/x-www-form-urlencoded", :accept => 'application/json'
