@@ -1,4 +1,5 @@
-class PaymentMethod::MercadoPago < PaymentMethod
+# -*- encoding : utf-8 -*-
+class PaymentMethod::MercadoPago < Spree::PaymentMethod
   preference :client_id,     :integer
   preference :client_secret, :string
 

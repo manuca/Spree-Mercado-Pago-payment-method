@@ -1,4 +1,5 @@
-CheckoutController.class_eval do
+# -*- encoding : utf-8 -*-
+Spree::CheckoutController.class_eval do
   before_filter :redirect_to_mercado_pago_button_if_needed, :only => [:update]
 
   def redirect_to_mercado_pago_button_if_needed
