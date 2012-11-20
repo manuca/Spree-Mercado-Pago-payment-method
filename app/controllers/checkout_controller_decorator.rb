@@ -4,7 +4,7 @@ Spree::CheckoutController.class_eval do
 
   def redirect_to_mercado_pago_button_if_needed
     return unless params[:state] == "payment"
-    @payment_method = PaymentMethod.find(params[:order][:payments_attributes].first[:payment_method_id])
+    @payment_method = Spree::PaymentMethod.find(params[:order][:payments_attributes].first[:payment_method_id])
 
     if @payment_method && @payment_method.kind_of?(PaymentMethod::MercadoPago)
       @order.update_attributes(object_params)
