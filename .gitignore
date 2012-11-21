@@ -5,3 +5,4 @@ spec/dummy
 .sass-cache
 .bundle
 *.swp
+.rvmrc
