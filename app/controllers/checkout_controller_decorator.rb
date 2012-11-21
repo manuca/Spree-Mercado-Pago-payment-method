@@ -8,7 +8,8 @@ Spree::CheckoutController.class_eval do
 
     if @payment_method && @payment_method.kind_of?(PaymentMethod::MercadoPago)
       @order.update_attributes(object_params)
-      redirect_to mercado_pago_button_path(:order_number => @order.number)
+      render :text => @order.to_json
+      # redirect_to mercado_pago_button_path(:order_number => @order.number)
     end
   end
 end

@@ -5,9 +5,11 @@ class MercadoPagoController < Spree::BaseController
   before_filter :get_order, :only => [:show]
 
   def show
+    render :text => "Mercado pago test"
+    return
     # Pending
     # Check login with Devise
-    
+
     # Get tokens, configure options, etc
     config_mercado_pago
   end
