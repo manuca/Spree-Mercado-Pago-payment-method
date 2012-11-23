@@ -11,7 +11,7 @@ Spree::CheckoutController.class_eval do
     if @payment_method && @payment_method.kind_of?(PaymentMethod::MercadoPago)
       @order.update_attributes(object_params)
 
-      backurls = {
+      back_urls = {
         success: mercado_pago_success_url,
         pending: mercado_pago_pending_url,
         failure: mercado_pago_failure_url
@@ -19,12 +19,13 @@ Spree::CheckoutController.class_eval do
 
       m = SpreeMercadoPagoClient.new(@order, back_urls)
 
+      # render :text => @order.to_json
+      
       if m.authenticate && m.send_data
         redirect_to m.redirect_url
       else
         render :action => :mercado_pago_error
       end
-      # render :text => @order.to_json
     end
   end
 end

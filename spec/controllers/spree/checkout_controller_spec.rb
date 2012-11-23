@@ -18,11 +18,14 @@ describe Spree::CheckoutController do
 
   before(:each) do
     user = double("User", :last_incomplete_spree_order => nil)
+    order.stub(:user => user)
     controller.stub :current_order => order 
     controller.stub(:spree_current_user => user)
   end
 
   context "Using Mercado Pago payment method" do
+    let(:order_attributes) { { payments_attributes: [{payment_method_id: "fake_id"}] } }
+
     before(:each) do
       payment_method = double("PaymentMethod::MercadoPago")
       payment_method.should_receive(:kind_of?).with(PaymentMethod::MercadoPago) { true }
@@ -40,7 +43,7 @@ describe Spree::CheckoutController do
       client.should_receive(:redirect_url) { "http://www.example.com" }
       SpreeMercadoPagoClient.should_receive(:new) { client }
 
-      spree_post :update, {:state => "payment"}
+      spree_post :update, {state: "payment", order: order_attributes }
       response.should redirect_to(client.redirect_url)
     end
 
@@ -51,7 +54,7 @@ describe Spree::CheckoutController do
       client.should_receive(:redirect_url) { "http://www.example.com" }
       SpreeMercadoPagoClient.should_receive(:new) { client }
 
-      spree_post :update, {:state => "payment"}
+      spree_post :update, {state: "payment", order: order_attributes }
       response.should render_template("mercado_pago_error")
     end
   end
