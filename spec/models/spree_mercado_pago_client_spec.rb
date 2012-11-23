@@ -11,7 +11,7 @@ describe SpreeMercadoPagoClient do
   end
 
   let(:order) { double("order", :payment_method => payment_method, :number => "testorder", :line_items => []) }
-  let(:url_callbacks) {{success: "url", failure: "url", pending: "url"}}
+  let(:url_callbacks) { {success: "url", failure: "url", pending: "url"} }
 
   describe "#initialize" do
     it "raises error if initialized without callbacks" do
@@ -34,7 +34,8 @@ describe SpreeMercadoPagoClient do
       response = double("response")
       response.stub(:code) { 200 }
       response.stub(:to_str) { {access_token: "123"}.to_json }
-      RestClient.stub(:post) { response }
+      RestClient.should_receive(:post) { response }
+
       client.authenticate.should be_true
     end
 
@@ -42,7 +43,7 @@ describe SpreeMercadoPagoClient do
       response = double("response")
       response.stub(:code) { 400 }
       response.stub(:to_str) { {}.to_json }
-      RestClient.stub(:post) { response }
+      RestClient.should_receive(:post) { response }
 
       expect { client.authenticate }.to raise_error
     end
