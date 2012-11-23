@@ -1,0 +1,41 @@
+{
+  "external_reference": "Reference_1234",
+  "items": [
+    {
+      "id": "Código",
+      "title": "Título de lo que estás pagando",
+      "description": "Descripción",
+      "quantity": 1,
+      "unit_price": 50.5,
+      "currency_id": "Tipo de moneda",
+      "picture_url": "https://www.mercadopago.com/org-img/MP3/home/logomp3.gif"
+    }
+  ],
+  "date_created": "2011-08-16T21:28:42.606-04:00",
+  "id": "identificador_de_la_preferencia",
+  "collector_id": "collector identifier",
+  "init_point": "https://www.mercadopago.com/checkout/pay?pref_id=identificador_de_la_preferencia",
+  "payer": {
+    "email": "payer@email.com",
+    "name": "payer-name",
+    "surname": "payer-surname"
+  },
+  "back_urls": {
+    "success": "https://www.success.com",
+    "failure": "http://www.failure.com",
+    "pending": "http://www.pending.com"
+  },
+  "payment_methods": {
+    "excluded_payment_methods": [
+      {
+        "id": "amex"
+      }
+    ],
+    "excluded_payment_types": [
+      {
+        "id": "ticket"
+      }
+    ],
+    "installments": 12
+  }
+}

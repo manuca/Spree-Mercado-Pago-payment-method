@@ -12,6 +12,7 @@ describe SpreeMercadoPagoClient do
 
   let(:order) { double("order", :payment_method => payment_method, :number => "testorder", :line_items => []) }
   let(:url_callbacks) { {success: "url", failure: "url", pending: "url"} }
+  let(:client) { SpreeMercadoPagoClient.new(order, url_callbacks) }
 
   describe "#initialize" do
     it "raises error if initialized without callbacks" do
@@ -28,32 +29,89 @@ describe SpreeMercadoPagoClient do
   end
 
   describe "#authenticate" do
-    let(:client) { SpreeMercadoPagoClient.new(order, url_callbacks) }
 
-    it "should return truthy value" do
-      response = double("response")
-      response.stub(:code) { 200 }
-      response.stub(:to_str) { {access_token: "123"}.to_json }
-      RestClient.should_receive(:post) { response }
+    context "On success" do
+      it "returns truthy value" do
+        response = double("response")
+        response.stub(:code) { 200 }
+        response.stub(:to_str) { {some_fake_data: "irrelevant"}.to_json }
+        RestClient.should_receive(:post) { response }
 
-      client.authenticate.should be_true
+        client.authenticate.should be_true
+      end
+
+      it "#errors returns empty array"
     end
 
-    it "raises exception on invalid authentication" do
-      response = double("response")
-      response.stub(:code) { 400 }
-      response.stub(:to_str) { {}.to_json }
-      RestClient.should_receive(:post) { response }
+    context "On failure" do
+      let(:bad_request_response) do
+        response = double("response")
+        response.stub(:code) { 400 }
+        response.stub(:to_str) { {}.to_json }
+        response
+      end
 
-      expect { client.authenticate }.to raise_error
+      before { RestClient.should_receive(:post) { bad_request_response } }
+
+      it "returns falsy value on invalid authentication" do
+        client.authenticate.should be_false
+      end
+
+      it "populates #errors returns array of errors" do
+        client.authenticate
+        client.errors.should include(I18n.t(:mp_authentication_error))
+      end
     end
   end
 
   describe "#send_data" do
-    it "should return truthy value on success"
+    context "On success" do
+      let(:login_json_response)  { {authentication_data: ""}.to_json } 
+      let(:preferences_json_response) do
+        root = File.expand_path("../", File.dirname(__FILE__))
+        f = File.open("#{root}/fixtures/preferences_created.json", "r")
+        f.read
+      end
+
+      before(:each) do
+        response = double("response")
+        response.stub(:code).and_return(200, 201)
+        response.stub(:to_str).and_return(login_json_response, preferences_json_response)
+        RestClient.should_receive(:post).exactly(2).times { response }
+
+        client.authenticate
+      end
+
+      it "returns truthy value on success" do
+        client.send_data.should be_true
+      end
+
+      it "#redirect_url returns offsite checkout url" do
+        client.send_data
+        client.redirect_url.should be_present
+        client.redirect_url.should eq("https://www.mercadopago.com/checkout/pay?pref_id=identificador_de_la_preferencia")
+      end
+    end
+
+    context "on failure" do
+      before(:each) do
+        response = double("response")
+        response.stub(:code).and_return(200, 400)
+        response.stub(:to_str) { {some_fake_data: "irrelevant"}.to_json }
+        RestClient.should_receive(:post).exactly(2).times { response }
+      end
+
+      it "returns falsy value" do
+        client.authenticate
+        client.send_data.should be_false
+      end
+
+      it "populates #errors returns array of errors" do
+        client.authenticate
+        client.send_data
+        client.errors.should include(I18n.t(:mp_preferences_setup_error))
+      end
+    end
   end
 
-  describe "#redirect_url" do
-    it "should return offsite checkout url" 
-  end
 end

@@ -32,10 +32,6 @@ describe Spree::CheckoutController do
       Spree::PaymentMethod.should_receive(:find) { payment_method }
     end
 
-    it "creates MercadoPagoClient instance" do
-      SpreeMercadoPagoClient.should_receive(:new)
-    end
-
     it "redirects to m.redirect_url on success" do
       client = double("client")
       client.should_receive(:authenticate) { true }
@@ -44,14 +40,14 @@ describe Spree::CheckoutController do
       SpreeMercadoPagoClient.should_receive(:new) { client }
 
       spree_post :update, {state: "payment", order: order_attributes }
-      response.should redirect_to(client.redirect_url)
+      response.should redirect_to("http://www.example.com")
     end
 
     it "renders mercado_pago_error.html.erb on error" do
       client = double("client")
       client.should_receive(:authenticate) { false }
-      client.should_receive(:send_data) { true }
-      client.should_receive(:redirect_url) { "http://www.example.com" }
+      client.stub(:send_data) { true }
+      client.stub(:redirect_url) { "http://www.example.com" }
       SpreeMercadoPagoClient.should_receive(:new) { client }
 
       spree_post :update, {state: "payment", order: order_attributes }

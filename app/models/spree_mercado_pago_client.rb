@@ -2,6 +2,8 @@
 require 'rest_client'
 
 class SpreeMercadoPagoClient
+  attr_reader :errors
+
   def initialize(order, callbacks)
     unless callbacks[:success] && callbacks[:pending] && callbacks[:failure]
       raise "Url callbacks where not specified"
@@ -9,6 +11,7 @@ class SpreeMercadoPagoClient
 
     @order = order
     @callbacks = callbacks
+    @errors = []
     config_options
   end
 
@@ -17,10 +20,13 @@ class SpreeMercadoPagoClient
 
     if response.code != 200
       @auth_response = nil
-      raise I18n.t(:mp_authentication_error) 
+      @errors << I18n.t(:mp_authentication_error) 
     else
+      @errors = []
       @auth_response = ActiveSupport::JSON.decode(response)
     end
+
+    @auth_response
   end
 
   def send_data
@@ -28,10 +34,17 @@ class SpreeMercadoPagoClient
 
     if response.code != 201
       @config_response = nil
-      raise I18n.t(:mp_preferences_setup_error)
+      @errors << I18n.t(:mp_preferences_setup_error)
     else
+      @errors = []
       @config_response = ActiveSupport::JSON.decode(response)
     end
+
+    @config_response
+  end
+
+  def redirect_url
+    @config_response["init_point"] if @config_response.present?
   end
 
   private

@@ -18,8 +18,6 @@ Spree::CheckoutController.class_eval do
       }
 
       m = SpreeMercadoPagoClient.new(@order, back_urls)
-
-      # render :text => @order.to_json
       
       if m.authenticate && m.send_data
         redirect_to m.redirect_url
