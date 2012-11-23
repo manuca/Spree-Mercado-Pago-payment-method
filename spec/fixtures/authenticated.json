@@ -1,0 +1,7 @@
+{
+  "access_token": "TU_ACCESS_TOKEN",
+  "token_type": "bearer",
+  "expires_in": 10800,
+  "scope": "...",
+  "refresh_token": "REFRESH_TOKEN"
+}

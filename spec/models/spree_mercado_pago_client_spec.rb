@@ -14,6 +14,18 @@ describe SpreeMercadoPagoClient do
   let(:url_callbacks) { {success: "url", failure: "url", pending: "url"} }
   let(:client) { SpreeMercadoPagoClient.new(order, url_callbacks) }
 
+  let(:login_json_response)  do
+    root = File.expand_path("../", File.dirname(__FILE__))
+    f = File.open("#{root}/fixtures/authenticated.json", "r")
+    f.read
+  end
+
+  let(:preferences_json_response) do
+    root = File.expand_path("../", File.dirname(__FILE__))
+    f = File.open("#{root}/fixtures/preferences_created.json", "r")
+    f.read
+  end
+
   describe "#initialize" do
     it "raises error if initialized without callbacks" do
       expect {
@@ -31,23 +43,28 @@ describe SpreeMercadoPagoClient do
   describe "#authenticate" do
 
     context "On success" do
-      it "returns truthy value" do
+      before(:each) do
         response = double("response")
         response.stub(:code) { 200 }
         response.stub(:to_str) { {some_fake_data: "irrelevant"}.to_json }
         RestClient.should_receive(:post) { response }
+      end
 
+      it "returns truthy value" do
         client.authenticate.should be_true
       end
 
-      it "#errors returns empty array"
+      it "#errors returns empty array" do
+        client.authenticate
+        client.errors.should be_empty
+      end
     end
 
     context "On failure" do
       let(:bad_request_response) do
         response = double("response")
         response.stub(:code) { 400 }
-        response.stub(:to_str) { {}.to_json }
+        response.stub(:to_str) { "" }
         response
       end
 
@@ -65,14 +82,8 @@ describe SpreeMercadoPagoClient do
   end
 
   describe "#send_data" do
-    context "On success" do
-      let(:login_json_response)  { {authentication_data: ""}.to_json } 
-      let(:preferences_json_response) do
-        root = File.expand_path("../", File.dirname(__FILE__))
-        f = File.open("#{root}/fixtures/preferences_created.json", "r")
-        f.read
-      end
 
+    context "On success" do
       before(:each) do
         response = double("response")
         response.stub(:code).and_return(200, 201)
