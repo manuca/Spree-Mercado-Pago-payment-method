@@ -3,6 +3,8 @@ require 'rest_client'
 
 class SpreeMercadoPagoClient
   attr_reader :errors
+  attr_reader :auth_response
+  attr_reader :preferences_response
 
   def initialize(order, callbacks)
     unless callbacks[:success] && callbacks[:pending] && callbacks[:failure]
@@ -33,18 +35,18 @@ class SpreeMercadoPagoClient
     response = send_preferences_request
 
     if response.code != 201
-      @config_response = nil
+      @preferences_response = nil
       @errors << I18n.t(:mp_preferences_setup_error)
     else
       @errors = []
-      @config_response = ActiveSupport::JSON.decode(response)
+      @preferences_response = ActiveSupport::JSON.decode(response)
     end
 
-    @config_response
+    @preferences_response
   end
 
   def redirect_url
-    @config_response["init_point"] if @config_response.present?
+    @preferences_response["init_point"] if @preferences_response.present?
   end
 
   private

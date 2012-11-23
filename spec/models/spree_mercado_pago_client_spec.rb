@@ -46,7 +46,7 @@ describe SpreeMercadoPagoClient do
       before(:each) do
         response = double("response")
         response.stub(:code) { 200 }
-        response.stub(:to_str) { {some_fake_data: "irrelevant"}.to_json }
+        response.stub(:to_str) { login_json_response }
         RestClient.should_receive(:post) { response }
       end
 
@@ -57,6 +57,11 @@ describe SpreeMercadoPagoClient do
       it "#errors returns empty array" do
         client.authenticate
         client.errors.should be_empty
+      end
+
+      it "sets the access token" do
+        client.authenticate
+        client.auth_response["access_token"].should eq("TU_ACCESS_TOKEN")
       end
     end
 
