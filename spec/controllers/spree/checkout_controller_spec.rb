@@ -1,25 +1,36 @@
 require 'spec_helper'
 
 describe Spree::CheckoutController do
-  # let(:order) do
-  #   mock_model(Spree::Order, :checkout_allowed? => true,
-  #              :user => nil,
-  #              :email => nil,
-  #              :completed? => false,
-  #              :update_attributes => true,
-  #              :payment? => false,
-  #              :insufficient_stock_lines => [],
-  #              :coupon_code => nil).as_null_object
-  # end
+
+  let(:order) do
+    mock_model(
+      Spree::Order,
+      :checkout_allowed? => true,
+      :user => nil,
+      :email => nil,
+      :completed? => false,
+      :update_attributes => true,
+      :payment? => false,
+      :insufficient_stock_lines => [],
+      :coupon_code => nil
+    ).as_null_object
+  end
+
+  before(:each) do
+    user = double("User", :last_incomplete_spree_order => nil)
+    controller.stub :current_order => order 
+    controller.stub(:spree_current_user => user)
+  end
 
   context "Using Mercado Pago payment method" do
     before(:each) do
-      user = double("User", :last_incomplete_spree_order => nil)
-      controller.stub(:spree_current_user => user)
-
       payment_method = double("PaymentMethod::MercadoPago")
       payment_method.should_receive(:kind_of?).with(PaymentMethod::MercadoPago) { true }
       Spree::PaymentMethod.should_receive(:find) { payment_method }
+    end
+
+    it "creates MercadoPagoClient instance" do
+      SpreeMercadoPagoClient.should_receive(:new)
     end
 
     it "redirects to m.redirect_url on success" do
