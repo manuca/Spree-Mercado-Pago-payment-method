@@ -2,6 +2,8 @@
 require 'spec_helper'
 
 describe SpreeMercadoPagoClient do
+  SPEC_ROOT = File.expand_path("../", File.dirname(__FILE__))
+
   let(:payment_method) do
     double(
       "payment_method",
@@ -15,15 +17,11 @@ describe SpreeMercadoPagoClient do
   let(:client) { SpreeMercadoPagoClient.new(order, url_callbacks) }
 
   let(:login_json_response)  do
-    root = File.expand_path("../", File.dirname(__FILE__))
-    f = File.open("#{root}/fixtures/authenticated.json", "r")
-    f.read
+    File.open("#{SPEC_ROOT}/fixtures/authenticated.json", "r").read
   end
 
   let(:preferences_json_response) do
-    root = File.expand_path("../", File.dirname(__FILE__))
-    f = File.open("#{root}/fixtures/preferences_created.json", "r")
-    f.read
+    File.open("#{SPEC_ROOT}/fixtures/preferences_created.json", "r").read
   end
 
   describe "#initialize" do
