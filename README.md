@@ -15,5 +15,5 @@ gem 'spree_mercado_pago_payment_method', git: "github.com/manuca/Spree-Mercado-P
 Pending Work
 ------------
 
-- Implementation of IPN (Mercado Instant Payment Notification)
+- Implementation of IPN (Instant Payment Notification)
 - Configurable currency
