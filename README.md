@@ -13,3 +13,4 @@ PENDING WORK
 ============
 
 - Implementation of IPN (Mercado Instant Payment Notification)
+- Configurable currency

@@ -2,6 +2,10 @@
 require 'rest_client'
 
 class SpreeMercadoPagoClient
+  include ActionView::Helpers::TextHelper
+  include ActionView::Helpers::SanitizeHelper
+  include Spree::ProductsHelper
+
   attr_reader :errors
   attr_reader :auth_response
   attr_reader :preferences_response
@@ -85,7 +89,7 @@ class SpreeMercadoPagoClient
 
     @order.line_items.each do |li| 
       h = {
-        :title => li.description,
+        :title => line_item_description(li.variant),
         :unit_price => li.price.to_f,
         :quantity => li.quantity,
         :currency_id => "ARS"

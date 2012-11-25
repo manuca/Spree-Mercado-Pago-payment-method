@@ -17,7 +17,6 @@ class MercadoPagoController < Spree::BaseController
   def get_order
     session.delete(:order_id)
     @order = current_user.orders.find_by_number(params[:order_number])
-    # @order = current_order
 
     unless @order && (@order.state == 'payment' || @order.state == 'complete') && @order.payment_method.is_a?(PaymentMethod::MercadoPago)
       redirect_to checkout_state_path(@order.state) and return if @order.present?
