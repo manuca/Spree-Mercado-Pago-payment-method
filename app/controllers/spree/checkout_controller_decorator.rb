@@ -12,9 +12,9 @@ Spree::CheckoutController.class_eval do
       @order.update_attributes(object_params)
 
       back_urls = {
-        success: main_app.mercado_pago_success_url,
-        pending: main_app.mercado_pago_pending_url,
-        failure: main_app.mercado_pago_failure_url
+        success: spree.mercado_pago_success_url,
+        pending: spree.mercado_pago_pending_url,
+        failure: spree.mercado_pago_failure_url
       }
 
       m = SpreeMercadoPagoClient.new(@order, back_urls)
