@@ -3,7 +3,7 @@ require 'rest_client'
 
 module Spree
   class MercadoPagoController < Spree::BaseController
-    before_filter :get_order, :only => [:show]
+    before_filter :get_order
 
     def success
     end

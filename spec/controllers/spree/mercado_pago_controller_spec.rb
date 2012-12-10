@@ -13,8 +13,9 @@ describe Spree::MercadoPagoController do
     before { controller.stub(:spree_current_user => user) }
 
     it "marks the order as complete" do
-      get :success, { order_number: order.number }
-      assigns(:order).state should eq("complete")
+      spree_get :success, { order_number: order.number }
+      assigns(:order).should_not be_nil
+      assigns(:order).state.should eq("complete")
     end
   end
 
