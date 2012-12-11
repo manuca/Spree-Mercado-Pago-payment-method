@@ -2,7 +2,7 @@
 require 'rest_client'
 
 class SpreeMercadoPagoClient
-  # These tree includes are because of the user of line_item_description from
+  # These three includes are because of the user of line_item_description from
   # ProductsHelper
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::SanitizeHelper
