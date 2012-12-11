@@ -16,8 +16,9 @@ module Spree
 
     private
     def get_order
-      session.delete(:order_id)
-      @order = current_user.orders.find_by_number(params[:order_number])
+      user = spree_current_user
+      order_no = params[:order_number]
+      @order = Order.where(number: order_no).where(user_id: user.id).first
 
       unless @order && (@order.state == 'payment' || @order.state == 'complete') && @order.payment_method.is_a?(PaymentMethod::MercadoPago)
         redirect_to checkout_state_path(@order.state) and return if @order.present?
