@@ -7,12 +7,10 @@ describe Spree::MercadoPagoController do
   it "doesn't affect current order if there is one (session[:order_id])"
   
   describe "#success" do
-    let(:user)  { create(:user) }
-    let(:order) do 
-      o = create(:order, user: user, state: "payment") 
-      o.stub(:payment_method) { PaymentMethod::MercadoPago }
-      o
-    end
+    let(:user)           { create(:user) }
+    let(:payment_method) { create(:payment_method, type: "PaymentMethod::MercadoPago") }
+    let(:payment)        { create(:payment, payment_method: payment_method) }
+    let(:order)          { create(:order, user: user, state: "payment", payment: payment) }
 
     before { controller.stub(:spree_current_user => user) }
 

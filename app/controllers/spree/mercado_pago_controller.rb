@@ -17,7 +17,8 @@ module Spree
     private
     def correct_order_state
       (@order.state == 'payment' || @order.state == 'complete') && 
-        @order.payment_method.is_a?(PaymentMethod::MercadoPago)
+        @order.payment_method && 
+        (@order.payment_method.type == "PaymentMethod::MercadoPago")
     end
 
     def get_order
