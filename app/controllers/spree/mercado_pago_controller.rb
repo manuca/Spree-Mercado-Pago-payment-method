@@ -15,14 +15,23 @@ module Spree
     end
 
     private
+    def correct_order_state
+      (@order.state == 'payment' || @order.state == 'complete') && 
+        @order.payment_method.is_a?(PaymentMethod::MercadoPago)
+    end
+
     def get_order
       user = spree_current_user
       order_no = params[:order_number]
       @order = Order.where(number: order_no).where(user_id: user.id).first
 
-      unless @order && (@order.state == 'payment' || @order.state == 'complete') && @order.payment_method.is_a?(PaymentMethod::MercadoPago)
-        redirect_to checkout_state_path(@order.state) and return if @order.present?
-        redirect_to root_path
+      unless @order && correct_order_state
+        if @order.present?
+          redirect_to checkout_state_path(@order.state)
+        else
+          redirect_to root_path
+        end
+        return
       end
 
       # @order.update_attribute(:state, "complete")
