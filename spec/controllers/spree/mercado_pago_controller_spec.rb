@@ -9,12 +9,18 @@ describe Spree::MercadoPagoController do
   describe "#success" do
     let(:user)           { create(:user) }
     let(:payment_method) { create(:payment_method, type: "PaymentMethod::MercadoPago") }
-    let(:order)          { create(:order, user: user, state: "payment") }
-    let(:payment)        { create(:payment, payment_method: payment_method, order: order) }
+    let(:order)          do
+      order = create(:order, user: user, state: "payment")
+      create(:payment, payment_method: payment_method, order: order)
+      order
+    end
 
     before { controller.stub(:spree_current_user => user) }
 
     it "returns success" do
+      order.payment.should_not be_nil
+      order.payment_method.should_not be_nil
+      order.payment_method.type.should eq("PaymentMethod::MercadoPago")
       spree_get :success, { order_number: order.number }
       response.should be_success
     end
