@@ -24,9 +24,8 @@ module Spree
     end
 
     def advance_state
-      while @order.state != "complete"
-        @order.next
-      end
+      @order.update_attributes( { :state => "complete", :completed_at => Time.now },
+                               :without_protection => true)
     end
 
     def get_order
