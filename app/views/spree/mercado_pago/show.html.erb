@@ -1,9 +1,0 @@
-<h1> Pago a través de MercadoPago </h1>
-<h2>Número de orden <%= @order.number %></h2>
-
-<%= render :partial => 'shared/order_details', :locals => {:order => @order} %>
-
-<a href="https://www.mercadopago.com/checkout/pay?pref_id=<%= @config_response["id"] %>" name="MP-payButton" class="blue-l-rn-ar">Pagar</a>
-<script type="text/javascript" src="http://mp-tools.mlstatic.com/buttons/render.js"></script>
-
-<%# debug @config_response %>
