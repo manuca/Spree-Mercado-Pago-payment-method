@@ -25,39 +25,66 @@ describe Spree::MercadoPagoController do
     end
 
     describe "#success" do
-      before do
-        spree_get :success, { order_number: order.number }
+      context "with valid order" do
+        before do
+          spree_get :success, { order_number: order.number }
+        end
+
+        it { response.should be_success }
+        it { assigns(:order).should_not be_nil }
+        it { assigns(:order).state.should eq("complete") }
+        it { assigns(:order).id.should eq(order.id)}
+        it { assigns(:order).payment.state.should eq("pending") }
       end
 
-      it { response.should be_success }
-      it { assigns(:order).should_not be_nil }
-      it { assigns(:order).state.should eq("complete") }
-      it { assigns(:order).id.should eq(order.id)}
-      it { assigns(:order).payment.state.should eq("pending") }
+      context "with invalid order" do
+        before { spree_get :success }
+
+        it { response.should redirect_to(spree.root_path) }
+        it { flash[:error].should eq(I18n.t(:mp_invalid_order)) }
+      end
     end
 
     describe "#pending" do
-      before do
-        spree_get :pending, { order_number: order.number }
+      context "with valid order" do
+        before do
+          spree_get :pending, { order_number: order.number }
+        end
+
+        it { response.should be_success }
+        it { assigns(:order).should_not be_nil }
+        it { assigns(:order).state.should eq("complete") }
+        it { assigns(:order).id.should eq(order.id)}
+        it { assigns(:order).payment.state.should eq("pending") }
       end
 
-      it { response.should be_success }
-      it { assigns(:order).should_not be_nil }
-      it { assigns(:order).state.should eq("complete") }
-      it { assigns(:order).id.should eq(order.id)}
-      it { assigns(:order).payment.state.should eq("pending") }
+      context "with invalid order" do
+        before { spree_get :pending }
+
+        it { response.should redirect_to(spree.root_path) }
+        it { flash[:error].should eq(I18n.t(:mp_invalid_order)) }
+      end
     end
 
     describe "#failure" do
-      before do
-        spree_get :failure, { order_number: order.number }
+      context "with valid order" do
+        before do
+          spree_get :failure, { order_number: order.number }
+        end
+
+        it { response.should be_success }
+        it { assigns(:order).should_not be_nil }
+        it { assigns(:order).state.should eq("payment") }
+        it { assigns(:order).id.should eq(order.id)}
+        it { assigns(:order).payment.state.should eq("pending") }
       end
 
-      it { response.should be_success }
-      it { assigns(:order).should_not be_nil }
-      it { assigns(:order).state.should eq("payment") }
-      it { assigns(:order).id.should eq(order.id)}
-      it { assigns(:order).payment.state.should eq("pending") }
+      context "with invalid order" do
+        before { spree_get :failure }
+
+        it { response.should redirect_to(spree.root_path) }
+        it { flash[:error].should eq(I18n.t(:mp_invalid_order)) }
+      end
     end
   end
 end

@@ -38,6 +38,7 @@ module Spree
         if @order.present?
           redirect_to checkout_state_path(@order.state)
         else
+          flash[:error] = I18n.t(:mp_invalid_order)
           redirect_to root_path
         end
         return

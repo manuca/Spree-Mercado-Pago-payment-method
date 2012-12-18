@@ -4,3 +4,4 @@ en:
   mp_payment_pending: 
     Your order has been placed but your payment is still pending we will ship
     your order and contact you as soon as the payment is processed"
+  mp_invalid_order: "The specified order is invalid"

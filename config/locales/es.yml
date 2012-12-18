@@ -4,3 +4,4 @@ es:
   mp_payment_pending: 
     Su orden fue procesada con éxito aunque su pago aún se encuentra pendiente.
     En cuanto su pago se concrete su pedido será finalizado.
+  mp_invalid_order: "La órden especificada es inválida"
