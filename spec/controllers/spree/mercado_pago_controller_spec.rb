@@ -2,10 +2,13 @@
 require 'spec_helper'
 
 describe Spree::MercadoPagoController do
-  it "handles case where user is logged out redirects to login and back again"
   it "doesn't affect current order if there is one (session[:order_id])"
-  
-  describe "#success" do
+
+  context "Logged out user" do
+    it "redirects to login and back again"
+  end
+
+  context "Logged in user" do
     let(:user)           { create(:user) }
     let(:payment_method) { create(:payment_method, type: "PaymentMethod::MercadoPago") }
     let(:order)          do
@@ -15,30 +18,46 @@ describe Spree::MercadoPagoController do
     end
 
     before { controller.stub(:spree_current_user => user) }
-
-    it "returns success" do
+    before do
       order.payment.should_not be_nil
       order.payment_method.should_not be_nil
       order.payment_method.type.should eq("PaymentMethod::MercadoPago")
-      spree_get :success, { order_number: order.number }
-      response.should be_success
     end
 
-    it "marks the order as complete" do
-      spree_get :success, { order_number: order.number }
-      assigns(:order).should_not be_nil
-      assigns(:order).state.should eq("complete")
-      assigns(:order).id.should eq(order.id)
+    describe "#success" do
+      before do
+        spree_get :success, { order_number: order.number }
+      end
+
+      it { response.should be_success }
+      it { assigns(:order).should_not be_nil }
+      it { assigns(:order).state.should eq("complete") }
+      it { assigns(:order).id.should eq(order.id)}
+      it { assigns(:order).payment.state.should eq("pending") }
     end
-  end
 
-  describe "#pending" do
-    it "marks order as complete"
-    it "shows pending payment message"
-  end
+    describe "#pending" do
+      before do
+        spree_get :pending, { order_number: order.number }
+      end
 
-  describe "#failure" do
-    it "leaves order in payment state"
-    it "shows failure (or cancelled) message"
+      it { response.should be_success }
+      it { assigns(:order).should_not be_nil }
+      it { assigns(:order).state.should eq("complete") }
+      it { assigns(:order).id.should eq(order.id)}
+      it { assigns(:order).payment.state.should eq("pending") }
+    end
+
+    describe "#failure" do
+      before do
+        spree_get :failure, { order_number: order.number }
+      end
+
+      it { response.should be_success }
+      it { assigns(:order).should_not be_nil }
+      it { assigns(:order).state.should eq("payment") }
+      it { assigns(:order).id.should eq(order.id)}
+      it { assigns(:order).payment.state.should eq("pending") }
+    end
   end
 end

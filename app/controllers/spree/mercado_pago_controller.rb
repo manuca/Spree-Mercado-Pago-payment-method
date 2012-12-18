@@ -6,9 +6,11 @@ module Spree
     before_filter :get_order
 
     def success
+      advance_state
     end
 
     def pending
+      advance_state
     end
 
     def failure
@@ -19,6 +21,12 @@ module Spree
       (@order.state == 'payment' || @order.state == 'complete') &&
         @order.payment_method &&
         (@order.payment_method.type == "PaymentMethod::MercadoPago")
+    end
+
+    def advance_state
+      while @order.state != "complete"
+        @order.next
+      end
     end
 
     def get_order
@@ -33,11 +41,6 @@ module Spree
           redirect_to root_path
         end
         return
-      end
-
-      # @order.update_attribute(:state, "complete")
-      while @order.state != "complete"
-        @order.next
       end
     end
   end
