@@ -2,7 +2,6 @@
 require 'spec_helper'
 
 describe Spree::MercadoPagoController do
-  it "finds the order asociated with the current user"
   it "handles case where user is logged out redirects to login and back again"
   it "doesn't affect current order if there is one (session[:order_id])"
   
@@ -29,6 +28,7 @@ describe Spree::MercadoPagoController do
       spree_get :success, { order_number: order.number }
       assigns(:order).should_not be_nil
       assigns(:order).state.should eq("complete")
+      assigns(:order).id.should eq(order.id)
     end
   end
 
