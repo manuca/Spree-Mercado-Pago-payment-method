@@ -6,7 +6,7 @@ Integration of Mercado Pago with Spree 1.2
 Installation
 ------------
 
-Add this line to your Gemfile:
+Add this line to your Gemfile (Ruby 1.8 users note 1.9 style hash):
 
 ```
 gem 'spree_mercado_pago_payment_method', git: "github.com/manuca/Spree-Mercado-Pago-payment-method.git"
