@@ -9,7 +9,7 @@ Installation
 Add this line to your Gemfile (Ruby 1.8 users note 1.9 style hash):
 
 ```
-gem 'spree_mercado_pago_payment_method', git: "git@github.com:manuca/Spree-Mercado-Pago-payment-method.git"
+gem 'spree_mercado_pago_payment_method', git: "git@github.com:manuca/Spree-Mercado-Pago-payment-method.git", branch: "spree-1.2"
 ```
 
 Usage
