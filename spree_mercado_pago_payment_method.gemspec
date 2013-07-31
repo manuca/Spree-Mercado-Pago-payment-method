@@ -1,7 +1,7 @@
 # encoding: UTF-8
 Gem::Specification.new do |s|
   s.name = 'spree_mercado_pago_payment_method'
-  s.version = '0.0.1'
+  s.version = '0.1.0'
   s.summary = 'Integrates Mercado Pago with Spree'
   s.author = "Manuel Barros Reyes"
 
