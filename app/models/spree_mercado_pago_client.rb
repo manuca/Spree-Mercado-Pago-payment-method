@@ -57,8 +57,8 @@ class SpreeMercadoPagoClient
 
   private
   def send_authentication_request
-    client_id     = @order.payment_method.preferred_client_id
-    client_secret = @order.payment_method.preferred_client_secret
+    client_id     = @order.payments.last.payment_method.preferred_client_id
+    client_secret = @order.payments.last.payment_method.preferred_client_secret
 
     response = RestClient.post(
       'https://api.mercadolibre.com/oauth/token',

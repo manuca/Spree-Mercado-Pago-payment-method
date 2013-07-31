@@ -1,7 +1,9 @@
 Spree Mercado Pago Payment Method
 =================================
 
-Integration of Mercado Pago with Spree 1.2
+Integration of Mercado Pago with Spree 1.3
+
+(Spree 1.2 users please check spree-1.2 branch)
 
 Installation
 ------------

@@ -5,7 +5,7 @@ Gem::Specification.new do |s|
   s.summary = 'Integrates Mercado Pago with Spree'
   s.author = "Manuel Barros Reyes"
 
-  s.add_dependency 'spree_core', '~> 1.2.0'
+  s.add_dependency 'spree_core', '~> 1.3.0'
   s.add_dependency 'rest-client'
 
   s.add_development_dependency 'capybara', '1.1.2'
