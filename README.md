@@ -1,7 +1,7 @@
 Spree Mercado Pago Payment Method
 =================================
 
-Integration of Mercado Pago with Spree 1.2
+Integration of Mercado Pago with Spree 1.3
 
 Installation
 ------------
