@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 class PaymentMethod::MercadoPago < Spree::PaymentMethod
   preference :client_id,     :integer
   preference :client_secret, :string
@@ -7,8 +6,27 @@ class PaymentMethod::MercadoPago < Spree::PaymentMethod
     false
   end
 
-  def actions
-    %w{capture void}
+  def provider_class
+    MercadoPago::Client
+  end
+
+  def provider(additional_options={})
+    options = {
+      sandbox: preferred_sandbox
+    }
+    client = provider_class.new(self, options.merge(additional_options))
+    client.authenticate
+    client
+  end
+
+  def auto_capture?
+    false
+  end
+
+  def authorize(amount, source, gateway_options)
+    status = provider.get_payment_status identifier(gateway_options[:order_id])
+    success = !failed?(status)
+    ActiveMerchant::Billing::Response.new(success, 'MercadoPago payment authorized', {status: status})
   end
 
   # Indicates whether its possible to capture the payment
