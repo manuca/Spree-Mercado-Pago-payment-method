@@ -1,9 +1,8 @@
 class MercadoPago::Client
   module Preferences
 
-    def create_preferences(order, payment, callbacks)
-      options = create_preference_options order, payment, callbacks
-      response = send_preferences_request options
+    def create_preferences(preferences)
+      response = send_preferences_request preferences
       @preferences_response = ActiveSupport::JSON.decode(response)
     rescue RestClient::Exception => e
       @errors << I18n.t(:mp_authentication_error)
@@ -12,40 +11,10 @@ class MercadoPago::Client
 
   private
 
-    def create_preference_options(order, payment, callbacks)
-      options = Hash.new
-      options[:external_reference] = payment.identifier
-      options[:back_urls] = callbacks
-      options[:items] = Array.new
-
-      payer_options = @api_options[:payer]
-
-      options[:payer] = payer_options if payer_options
-
-      order.line_items.each do |li|
-        h = {
-            :title => line_item_description_text(li.variant.product.description),
-            :unit_price => li.price.to_f,
-            :quantity => li.quantity,
-            :currency_id => 'ARS'
-        }
-        options[:items] << h
-
-      end
-
-      options[:items] << {
-          :title => 'Costo de envío',
-          :unit_price => order.ship_total.to_f,
-          :quantity => 1,
-          :currency_id => 'ARS'
-      }
-      options
-    end
 
 
-
-    def send_preferences_request(options)
-      RestClient.post(preferences_url(access_token), options.to_json,
+    def send_preferences_request(preferences)
+      RestClient.post(preferences_url(access_token), preferences.to_json,
                     :content_type => 'application/json', :accept => 'application/json')
     end
   end

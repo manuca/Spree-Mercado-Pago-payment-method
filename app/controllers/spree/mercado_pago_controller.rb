@@ -31,9 +31,16 @@ module Spree
     private
 
     def create_preferences(mp_payment)
-      back_urls = get_back_urls
-      provider.create_preferences(current_order, mp_payment, callback_urls)
+      preferences = create_preference_options(current_order, mp_payment, back_urls)
+      provider.create_preferences(preferences)
     end
+
+    def create_preference_options(order, payment, callbacks)
+      builder = MercadoPago::OrderPreferencesBuilder.new order, payment, callbacks, payer_data
+
+      return builder.preferences_hash
+    end
+
 
     def render_result(current_state)
       process_payment current_payment
