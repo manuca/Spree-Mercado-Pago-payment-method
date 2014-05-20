@@ -1,12 +1,24 @@
 # -*- encoding : utf-8 -*-
-require 'rest_client'
-
 module Spree
-  class MercadoPagoController < Spree::BaseController
-    before_filter :get_order
 
-    def success
-      advance_state
+  class MercadoPagoController < Spree::StoreController
+
+    before_filter :verify_external_reference, :current_payment, only: [:success, :pending]
+    before_filter :payment_method_by_external_reference, :only => [:success, :pending, :failure]
+    before_filter :verify_payment_state, :only => [:payment]
+    skip_before_filter :verify_authenticity_token, :only => [:notification]
+
+    # If the order is in 'payment' state, redirects to Mercado Pago Checkout page
+    def payment
+      mp_payment = current_order.payments.create! source: payment_method,
+        amount: current_order.total,
+        payment_method: @payment_method
+
+      if create_preferences(mp_payment)
+        redirect_to provider.redirect_url
+      else
+        render 'spree/checkout/mercado_pago_error'
+      end
     end
 
     def pending
@@ -17,10 +29,32 @@ module Spree
     end
 
     private
-    def correct_order_state
-      (@order.state == 'payment' || @order.state == 'complete') &&
-        @order.payments.last.payment_method && @order.payments.m_method &&
-        (@order.payments.last.payment_method.type == "PaymentMethod::MercadoPago")
+
+    def create_preferences(mp_payment)
+      back_urls = get_back_urls
+      provider.create_preferences(current_order, mp_payment, callback_urls)
+    end
+
+    def render_result(current_state)
+      process_payment current_payment
+      if success_order? and current_state != :success
+        redirect_to_state :success
+      end
+      if failed_payment? and current_state != :failure
+        redirect_to_state :failure
+      end
+      if pending_payment? and current_state != :pending
+        redirect_to_state :pending
+      end
+
+    end
+
+    def payment_method
+      @payment_method ||= ::PaymentMethod::MercadoPago.find (params[:payment_method_id])
+    end
+
+    def provider
+      @provider ||= payment_method.provider({:payer => payer_data})
     end
 
     def advance_state

@@ -1,10 +1,8 @@
 class MercadoPago::Client
   module Preferences
 
-    def create_preferences(order, payment, success_callback,
-        pending_callback, failure_callback)
-      options = create_preference_options order, payment, success_callback,
-                                          pending_callback, failure_callback
+    def create_preferences(order, payment, callbacks)
+      options = create_preference_options order, payment, callbacks
       response = send_preferences_request options
       @preferences_response = ActiveSupport::JSON.decode(response)
     rescue RestClient::Exception => e
@@ -14,15 +12,10 @@ class MercadoPago::Client
 
   private
 
-    def create_preference_options(order, payment, success_callback,
-        pending_callback, failure_callback)
+    def create_preference_options(order, payment, callbacks)
       options = Hash.new
       options[:external_reference] = payment.identifier
-      options[:back_urls] = {
-          :success => success_callback,
-          :pending => pending_callback,
-          :failure => failure_callback
-      }
+      options[:back_urls] = callbacks
       options[:items] = Array.new
 
       payer_options = @api_options[:payer]
