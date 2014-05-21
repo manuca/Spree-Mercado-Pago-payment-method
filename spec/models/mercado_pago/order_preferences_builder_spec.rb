@@ -33,28 +33,23 @@ describe "OrderPreferencesBuilder" do
         expect(subject[:items]).to include({
           title: line_item_description_text(line_item.variant.product.description),
           unit_price: line_item.price.to_f,
-          quantity: line_item.quantity,
+          quantity: line_item.quantity.to_f,
           currency_id: "ARS"
         })
       end
     end
 
-    it "should set an item for shipment cost" do
+    it "should set its adjustments as items" do
       expect(subject[:items]).to include({
-        title: "Costo de envío",
-        unit_price: order.ship_total.to_f,
+        title: adjustment.label, 
+        unit_price: adjustment.amount.to_f,
         quantity: 1,
         currency_id: "ARS"
       })
     end
 
-    it "should set its adjustments as items" do
-      expect(subject[:items]).to include({
-        title: adjustment.label, 
-        unit_price: adjustment.amount,
-        quantity: 1,
-        currency_id: "ARS"
-      })
+    it "should only have line items and adjustments in items" do
+      expect(subject[:items]).to have(order.line_items.count + order.adjustments.count).items
     end
   end
 end
