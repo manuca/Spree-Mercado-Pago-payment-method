@@ -26,15 +26,10 @@ module MercadoPago
     def generate_items
       items = []
 
-      items += @order.line_items.collect do |line_item|
-        {
-            :title => line_item_description_text(line_item.variant.product.description),
-            :unit_price => line_item.price.to_f,
-            :quantity => line_item.quantity,
-            :currency_id => 'ARS'
-        }
-      end
+      items += generate_items_from_line_items
 
+      items += generate_items_from_adjustments
+      
       items << {
         :title => 'Costo de envío',
         :unit_price => @order.ship_total.to_f,
@@ -43,6 +38,28 @@ module MercadoPago
       }
 
       items
+    end
+
+    def generate_items_from_line_items
+      @order.line_items.collect do |line_item|
+        {
+          :title => line_item_description_text(line_item.variant.product.description),
+          :unit_price => line_item.price.to_f,
+          :quantity => line_item.quantity,
+          :currency_id => 'ARS'
+        }
+      end
+    end
+
+    def generate_items_from_adjustments
+      @order.adjustments.collect do |adjustment|
+        {
+          title: adjustment.label,
+          unit_price: adjustment.amount,
+          quantity: 1,
+          currency_id: "ARS"
+        }
+      end
     end
   end
 end

@@ -1,6 +1,9 @@
 describe "OrderPreferencesBuilder" do
   
-  let(:order) { create :order_with_line_items } 
+
+  let!(:order) { order = create :order_with_line_items }
+
+  let!(:adjustment) { create :adjustment, adjustable:order, amount:-500.0, label: "Descuento"}
   let(:payment) { create :payment }
   let(:callback_urls) { {success:"http://example.com/success", pending:"http://example.com/pending", failure: "http://example.com/failure" }}
   let(:payer_data) { {email:"jmperez@devartis.com"}}
@@ -40,6 +43,15 @@ describe "OrderPreferencesBuilder" do
       expect(subject[:items]).to include({
         title: "Costo de envío",
         unit_price: order.ship_total.to_f,
+        quantity: 1,
+        currency_id: "ARS"
+      })
+    end
+
+    it "should set its adjustments as items" do
+      expect(subject[:items]).to include({
+        title: adjustment.label, 
+        unit_price: adjustment.amount,
         quantity: 1,
         currency_id: "ARS"
       })
