@@ -56,7 +56,7 @@ module MercadoPago
     end
 
     def generate_items_from_adjustments
-      @order.adjustments.collect do |adjustment|
+      @order.adjustments.eligible.collect do |adjustment|
         {
           title: line_item_description_text(adjustment.label),
           unit_price: adjustment.amount.to_f,
