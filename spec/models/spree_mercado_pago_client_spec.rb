@@ -39,7 +39,6 @@ describe SpreeMercadoPagoClient do
   end
 
   describe "#authenticate" do
-
     context "On success" do
       before(:each) do
         response = double("response")
