@@ -3,12 +3,10 @@ Spree Mercado Pago Payment Method
 
 Integration of Mercado Pago with Spree 1.3
 
-(Spree 1.2 users please check spree-1.2 branch)
+For Spree 1.2 users please check spree-1.2 branch
 
 Installation
 ------------
-
-Add this line to your Gemfile (Ruby 1.8 users note 1.9 style hash):
 
 ```
 gem 'spree_mercado_pago_payment_method', git: "git@github.com:manuca/Spree-Mercado-Pago-payment-method.git"
@@ -27,3 +25,11 @@ Pending Work
 - Portuguese translation (volunteers please take a look at localization files, there are very few strings to translate and I'll be glad to add a pt.yml to this repo).
 - Implementation of IPN (Instant Payment Notification)
 - Configurable currency
+
+Testing
+-------
+
+- clone this repo
+- execute `bundle`
+- execute `rake test_app` to build a dummy app directory inside specs
+- execute `bundle exec rspec spec`
