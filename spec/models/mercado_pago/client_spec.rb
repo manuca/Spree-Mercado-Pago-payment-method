@@ -39,12 +39,11 @@ describe MercadoPago::Client do
         response.stub(:to_str) { login_json_response }
         response
       }
-      let(:js_response) {ActiveSupport::JSON.decode(http_response)}
+      let(:js_response) { ActiveSupport::JSON.decode(http_response) }
 
       before(:each) do
         expect(RestClient).to receive(:post).and_return( http_response )
       end
-
 
       it 'returns a response object' do
         expect(client.authenticate).to eq(js_response)
@@ -94,6 +93,7 @@ describe MercadoPago::Client do
   describe '#create_preferences' do
     context 'On success' do
       let(:preferences) { {foo:"bar"} }
+
       before(:each) do
         response = double('response')
         response.stub(:code).and_return(200, 201)

@@ -5,7 +5,7 @@ class MercadoPago::Client
       @preferences_response[point_key] if @preferences_response.present?
     end
 
-  private
+    private
 
     def notifications_url(mercado_pago_id)
       sandbox_part = sandbox ? 'sandbox/' : ''

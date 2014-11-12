@@ -8,17 +8,16 @@ class MercadoPago::Client
       raise RuntimeError.new e.message
     end
 
-
-  private
+    private
 
     def send_authentication_request
       RestClient.post(
         'https://api.mercadolibre.com/oauth/token',
-          {:grant_type => 'client_credentials', :client_id => client_id, :client_secret => client_secret},
-          :content_type => 'application/x-www-form-urlencoded', :accept => 'application/json'
+        {:grant_type => 'client_credentials', :client_id => client_id, :client_secret => client_secret},
+        :content_type => 'application/x-www-form-urlencoded', :accept => 'application/json'
       )
     end
-    
+
     def client_id
       @payment_method.preferred_client_id
     end
@@ -33,6 +32,5 @@ class MercadoPago::Client
       end
       @auth_response['access_token']
     end
-
   end
 end
