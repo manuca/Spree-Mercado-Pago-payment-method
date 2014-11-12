@@ -20,8 +20,7 @@ module MercadoPago
       }
     end
 
-
-  private
+    private
 
     def generate_items
       items = []
@@ -36,10 +35,10 @@ module MercadoPago
     def generate_items_from_shipments
       @order.shipments.collect do |shipment|
         {
-            :title => shipment.shipping_method.name,
-            :unit_price => shipment.cost.to_f,
-            :quantity => 1,
-            :currency_id => 'ARS'
+          :title => shipment.shipping_method.name,
+          :unit_price => shipment.cost.to_f,
+          :quantity => 1,
+          :currency_id => 'ARS'
         }
       end
     end

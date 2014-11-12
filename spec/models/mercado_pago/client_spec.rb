@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'spec_helper'
 
 describe MercadoPago::Client do
@@ -12,10 +11,8 @@ describe MercadoPago::Client do
     )
   end
 
-
   let(:order) { double('order', payment_method: payment_method, number: 'testorder', line_items: [], ship_total: 1000) }
   let(:url_callbacks) { {success: 'url', failure: 'url', pending: 'url'} }
-  
   let(:payment_method) { double :payment_method, id: 1, preferred_client_id: 'app id', preferred_client_secret: 'app secret' }
   let(:payment) {double :payment, payment_method:payment_method, id:1, identifier:"fruta" }
   let(:login_json_response)  do
@@ -26,10 +23,9 @@ describe MercadoPago::Client do
     File.open("#{SPEC_ROOT}/../fixtures/preferences_created.json", 'r').read
   end
 
-  let(:client) {MercadoPago::Client.new(payment_method)}
+  let(:client) { MercadoPago::Client.new(payment_method) }
 
   describe '#initialize' do
-
     it "doesn't raise error with all params" do
       expect {client}.not_to raise_error
     end
@@ -42,7 +38,7 @@ describe MercadoPago::Client do
         response.stub(:code) { 200 }
         response.stub(:to_str) { login_json_response }
         response
-        }
+      }
       let(:js_response) {ActiveSupport::JSON.decode(http_response)}
 
       before(:each) do
@@ -96,7 +92,6 @@ describe MercadoPago::Client do
   end
 
   describe '#create_preferences' do
-
     context 'On success' do
       let(:preferences) { {foo:"bar"} }
       before(:each) do
@@ -121,7 +116,6 @@ describe MercadoPago::Client do
     end
 
     context 'on failure' do
-
       before(:each) do
         RestClient.should_receive(:post).exactly(2).times do
           if not @is_second_time
@@ -133,17 +127,14 @@ describe MercadoPago::Client do
         end
         client.authenticate
       end
-      
-      let(:preferences) {{foo:"bar"}}
+
+      let(:preferences) { {foo:"bar"} }
 
       it 'throws exception and populate errors' do
-
         expect {client.create_preferences(preferences)}.to raise_error(RuntimeError) do |variable|
           client.errors.should include(I18n.t(:mp_authentication_error))
         end
       end
-
     end
   end
-
 end

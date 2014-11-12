@@ -1,12 +1,18 @@
+require 'spec_helper'
+
 describe "OrderPreferencesBuilder" do
-  
+  # Factory order_with_line_items is incredibly slow..
+  let(:order) do
+    order = create(:order)
+    create_list(:line_item, 2, order: order)
+    order.line_items.reload
+    order.update!
+    order
+  end
 
-  let!(:order) { order = create :order_with_line_items }
-
-  let!(:adjustment) { create :adjustment, adjustable:order, amount:-500.0, label: "Descuento"}
-  let(:payment) { create :payment }
-  let(:callback_urls) { {success:"http://example.com/success", pending:"http://example.com/pending", failure: "http://example.com/failure" }}
-  let(:payer_data) { {email:"jmperez@devartis.com"}}
+  let(:payment)       { create(:payment) }
+  let(:callback_urls) { {success: "http://example.com/success", pending: "http://example.com/pending", failure: "http://example.com/failure"} }
+  let(:payer_data)    { {email:"jmperez@devartis.com"} }
 
   include ActionView::Helpers::TextHelper
   include ActionView::Helpers::SanitizeHelper
@@ -29,9 +35,10 @@ describe "OrderPreferencesBuilder" do
 
     it "should set an item for every line item" do
       expect(subject).to include(:items)
+
       order.line_items.each do |line_item|
         expect(subject[:items]).to include({
-          title: line_item_description_text(line_item.variant.product.description),
+          title: line_item_description_text(line_item.variant.product.name),
           unit_price: line_item.price.to_f,
           quantity: line_item.quantity.to_f,
           currency_id: "ARS"
@@ -39,17 +46,21 @@ describe "OrderPreferencesBuilder" do
       end
     end
 
-    it "should set its adjustments as items" do
-      expect(subject[:items]).to include({
-        title: adjustment.label, 
-        unit_price: adjustment.amount.to_f,
-        quantity: 1,
-        currency_id: "ARS"
-      })
-    end
+    context "for order with adjustments" do
+      let!(:adjustment) { Spree::Adjustment.create!(adjustable: order, order: order, label: "Descuento", amount: -10.0) }
 
-    it "should only have line items and adjustments in items" do
-      expect(subject[:items]).to have(order.line_items.count + order.adjustments.count).items
+      it "should set its adjustments as items" do
+        expect(subject[:items]).to include({
+          title: line_item_description_text(adjustment.label),
+          unit_price: adjustment.amount.to_f,
+          quantity: 1,
+          currency_id: "ARS"
+        })
+      end
+
+      it "should only have line items and adjustments in items" do
+        expect(subject[:items]).to have(order.line_items.count + order.adjustments.count).items
+      end
     end
   end
 end
