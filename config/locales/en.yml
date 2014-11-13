@@ -2,7 +2,7 @@ en:
   mp_authentication_error: "It was not possible to authenticate with Mercado Pago"
   mp_preferences_setup_error: "Couldn't send order preferences to Mercado Pago"
   mp_payment_success: 
-    Your payent with Mercado Pago was successful.
+    Your payment with Mercado Pago was successful.
 
     Please take into account that this payment may take some hours to reflect
     on this site.
