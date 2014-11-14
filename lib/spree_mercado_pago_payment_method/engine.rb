@@ -15,7 +15,7 @@ module SpreeMercadoPagoPaymentMethod
     end
 
     initializer "spree_payment_network.register.payment_methods" do |app|
-      app.config.spree.payment_methods += [PaymentMethod::MercadoPago]
+      app.config.spree.payment_methods += [Spree::PaymentMethod::MercadoPago]
     end
 
     config.to_prepare &method(:activate).to_proc

@@ -4,11 +4,11 @@ module MercadoPago
     include ActionView::Helpers::SanitizeHelper
     include Spree::ProductsHelper
 
-    def initialize(order, payment, callback_urls, payer_data=nil)
-      @order = order
-      @payment = payment
+    def initialize(order, payment, callback_urls, payer_data = nil)
+      @order         = order
+      @payment       = payment
       @callback_urls = callback_urls
-      @payer_data = payer_data
+      @payer_data    = payer_data
     end
 
     def preferences_hash

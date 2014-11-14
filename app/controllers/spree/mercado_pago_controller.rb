@@ -1,18 +1,43 @@
 module Spree
   class MercadoPagoController < StoreController
-    ssl_allowed
-
+    # Order must be in payment state
+    # Find payment method
+    # Send preferences to MP
+    # Create Payment for this order with found payment method
+    # payment.started_processing
+    # Redirect to MP init point
     def checkout
-      order = current_order || raise(ActiveRecord::RecordNotFound)
+      current_order || raise(ActiveRecord::RecordNotFound)
+      payment_method = PaymentMethod::MercadoPago.find(params[:payment_method_id])
+      payment = current_order.payments.create!({amount: current_order.total, payment_method: payment_method})
+      payment.started_processing!
+      render text: current_order.number
     end
 
     def success
+      # Pass payment to pending state
+      # Flash success with pending order
+      # Redirect to order list
     end
 
     def pending
+      # Pass payment to pending state
+      # Flash success with pending order
+      # Redirect to order list
     end
 
     def failure
+      # Pass payment to failed state
+      # Flash error
+      # Redirect to checkout state payment
+    end
+
+    def ipn
+      # Search for payment by external reference
+      # Fetch payment status from MP
+      # Update payment status to complete if payed and assign payment info as payment source
+      # payment.complete!
+      # Notify user
     end
 
     private
@@ -49,9 +74,14 @@ module Spree
     #   @payment_method ||= ::PaymentMethod::MercadoPago.find (params[:payment_method_id])
     # end
 
-    # def provider
-    #   @provider ||= payment_method.provider({:payer => payer_data})
-    # end
+    # Get payer info for sending within Mercado Pago request
+    def payer_data
+      @order ? {payer: {email: @order.email}} : {}
+    end
+
+    def provider
+      @provider ||= payment_method.provider({payer: payer_data})
+    end
 
     # def advance_state
     #   @order.update_attributes( { :state => "complete", :completed_at => Time.now },

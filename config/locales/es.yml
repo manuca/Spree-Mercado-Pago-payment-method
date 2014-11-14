@@ -1,4 +1,7 @@
 es:
+  mercado_pago:
+    make_payment: "Realizar pago en Mercado Pago"
+
   mp_authentication_error: "Hubo un error al realizar la autenticación con Mercado Pago"
   mp_preferences_setup_error: "Hubo un error al enviar sus pedido a Mercado Pago"
   mp_payment_success: 
