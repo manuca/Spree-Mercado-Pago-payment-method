@@ -1,11 +1,11 @@
 class MercadoPago::Client
   module Preferences
     def create_preferences(preferences)
-      response = send_preferences_request preferences
+      response = send_preferences_request(preferences)
       @preferences_response = ActiveSupport::JSON.decode(response)
     rescue RestClient::Exception => e
-      @errors << I18n.t(:mp_authentication_error)
-      raise RuntimeError.new e.message
+      @errors << I18n.t(:authentication_error, scope: :mercado_pago)
+      raise RuntimeError.new(e.message)
     end
 
     private

@@ -2,38 +2,54 @@ module Spree
   class MercadoPagoController < StoreController
     # Order must be in payment state
     # Find payment method
+    # Create Payment for this order with current payment method
     # Send preferences to MP
-    # Create Payment for this order with found payment method
-    # payment.started_processing
+    # Pass payment to processing state
     # Redirect to MP init point
     def checkout
-      current_order || raise(ActiveRecord::RecordNotFound)
+      current_order.state_name == :payment || raise(ActiveRecord::RecordNotFound)
       payment_method = PaymentMethod::MercadoPago.find(params[:payment_method_id])
       payment = current_order.payments.create!({amount: current_order.total, payment_method: payment_method})
       payment.started_processing!
-      render text: current_order.number
+
+      preferences = ::MercadoPago::OrderPreferencesBuilder.
+        new(current_order, payment, callback_urls).
+        preferences_hash
+
+      provider = payment_method.provider
+      provider.create_preferences(preferences)
+
+      redirect_to provider.redirect_url
     end
 
     def success
+      # Fetch payment by external reference
       # Pass payment to pending state
-      # Flash success with pending order
-      # Redirect to order list
+      # Flash success & redirect to order detail
+      payment = Spree::Payment.where(identifier: params[:external_reference]).first
+      # @current_order = nil if current_order == payment.order
+      payment.pend!
+      flash.notice = Spree.t(:order_processed_successfully)
+      flash['order_completed'] = true
+      redirect_to spree.order_path(payment.order)
     end
 
     def pending
+      # Fetch payment by external reference
       # Pass payment to pending state
       # Flash success with pending order
       # Redirect to order list
     end
 
     def failure
+      # Fetch payment by external reference
       # Pass payment to failed state
       # Flash error
       # Redirect to checkout state payment
     end
 
     def ipn
-      # Search for payment by external reference
+      # Fetch payment by external reference
       # Fetch payment status from MP
       # Update payment status to complete if payed and assign payment info as payment source
       # payment.complete!
@@ -41,6 +57,14 @@ module Spree
     end
 
     private
+
+    def callback_urls
+      @callback_urls ||= {
+        success: mercado_pago_success_url,
+        pending: mercado_pago_pending_url,
+        failure: mercado_pago_failure_url
+      }
+    end
 
     # def create_preferences(mp_payment)
     #   preferences = create_preference_options(current_order, mp_payment, get_back_urls)

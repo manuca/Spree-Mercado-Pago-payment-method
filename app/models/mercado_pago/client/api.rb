@@ -2,7 +2,7 @@ class MercadoPago::Client
   module API
     def redirect_url
       point_key = sandbox ? 'sandbox_init_point' : 'init_point'
-      @preferences_response[point_key] if @preferences_response.present?
+      @preferences_response[point_key]# if @preferences_response.present?
     end
 
     private
@@ -24,7 +24,7 @@ class MercadoPago::Client
     end
 
     def preferences_url(token)
-      create_url 'https://api.mercadolibre.com/checkout/preferences', access_token: token
+      create_url('https://api.mercadolibre.com/checkout/preferences', access_token: token)
     end
 
     def sandbox

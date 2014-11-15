@@ -4,23 +4,20 @@ describe MercadoPago::Client do
   SPEC_ROOT = File.expand_path('../', File.dirname(__FILE__))
 
   let(:payment_method) do
-    double(
-      'payment_method',
-      :preferred_client_id => 1,
-      :preferred_client_secret => 1
-    )
+    double('payment_method', preferred_client_id: 1, preferred_client_secret: 1)
   end
 
   let(:order) { double('order', payment_method: payment_method, number: 'testorder', line_items: [], ship_total: 1000) }
   let(:url_callbacks) { {success: 'url', failure: 'url', pending: 'url'} }
   let(:payment_method) { double :payment_method, id: 1, preferred_client_id: 'app id', preferred_client_secret: 'app secret' }
   let(:payment) {double :payment, payment_method:payment_method, id:1, identifier:"fruta" }
+
   let(:login_json_response)  do
-    File.open("#{SPEC_ROOT}/../fixtures/authenticated.json", 'r').read
+    File.open("#{SPEC_ROOT}/../fixtures/authenticated.json").read
   end
 
   let(:preferences_json_response) do
-    File.open("#{SPEC_ROOT}/../fixtures/preferences_created.json", 'r').read
+    File.open("#{SPEC_ROOT}/../fixtures/preferences_created.json").read
   end
 
   let(:client) { MercadoPago::Client.new(payment_method) }
@@ -74,7 +71,7 @@ describe MercadoPago::Client do
 
       it 'raise exception on invalid authentication' do
         expect { client.authenticate }.to raise_error(RuntimeError) do |error|
-          client.errors.should include(I18n.t(:mp_authentication_error))
+          client.errors.should include(I18n.t(:authentication_error, scope: :mercado_pago))
         end
       end
     end
@@ -109,7 +106,7 @@ describe MercadoPago::Client do
       end
 
       it '#redirect_url returns offsite checkout url' do
-        client.create_preferences preferences
+        client.create_preferences(preferences)
         client.redirect_url.should be_present
         client.redirect_url.should eq('https://www.mercadopago.com/checkout/pay?pref_id=identificador_de_la_preferencia')
       end
@@ -132,7 +129,7 @@ describe MercadoPago::Client do
 
       it 'throws exception and populate errors' do
         expect {client.create_preferences(preferences)}.to raise_error(RuntimeError) do |variable|
-          client.errors.should include(I18n.t(:mp_authentication_error))
+          client.errors.should include(I18n.t(:authentication_error, scope: :mercado_pago))
         end
       end
     end

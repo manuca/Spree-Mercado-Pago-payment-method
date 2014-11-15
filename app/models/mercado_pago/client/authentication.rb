@@ -4,7 +4,7 @@ class MercadoPago::Client
       response = send_authentication_request
       @auth_response = ActiveSupport::JSON.decode(response)
     rescue RestClient::Exception => e
-      @errors << I18n.t(:mp_authentication_error)
+      @errors << I18n.t(:authentication_error, scope: :mercado_pago)
       raise RuntimeError.new e.message
     end
 
@@ -27,9 +27,7 @@ class MercadoPago::Client
     end
 
     def access_token
-      unless @auth_response
-        authenticate
-      end
+      authenticate unless @auth_response
       @auth_response['access_token']
     end
   end

@@ -17,10 +17,9 @@ module MercadoPago
 
     def initialize(payment_method, options={})
       @payment_method = payment_method
-      @api_options = options.clone
-      @errors = []
+      @api_options    = options.clone
+      @errors         = []
     end
-
 
     def get_external_reference(mercado_pago_id)
       response = send_notification_request mercado_pago_id
