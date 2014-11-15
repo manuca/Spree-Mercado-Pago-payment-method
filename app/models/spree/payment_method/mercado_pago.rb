@@ -21,32 +21,12 @@ module Spree
                     end
     end
 
-    def auto_capture?
+    def source_required?
       false
     end
 
-    # def authorize(amount, source, gateway_options)
-    #   status = provider.get_payment_status identifier(gateway_options[:order_id])
-    #   success = !failed?(status)
-    #   ActiveMerchant::Billing::Response.new(success, 'MercadoPago payment authorized', {status: status})
-    # end
-
-    # # Indicates whether its possible to capture the payment
-    # def can_capture?(payment)
-    #   ['checkout', 'pending'].include?(payment.state)
-    # end
-
-    # # Indicates whether its possible to void the payment.
-    # def can_void?(payment)
-    #   payment.state != 'void'
-    # end
-
-    # def capture(*args)
-    #   ActiveMerchant::Billing::Response.new(true, "", {}, {})
-    # end
-
-    # def void(*args)
-    #   ActiveMerchant::Billing::Response.new(true, "", {}, {})
-    # end
+    def auto_capture?
+      false
+    end
   end
 end
