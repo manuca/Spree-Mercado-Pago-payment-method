@@ -2,15 +2,3 @@ en:
   mercado_pago:
     make_payment: "Pay with Mercado Pago"
     authentication_error: "It was not possible to authenticate with Mercado Pago"
-
-  mp_preferences_setup_error: "Couldn't send order preferences to Mercado Pago"
-  mp_payment_success: 
-    Your payment with Mercado Pago was successful.
-
-    Please take into account that this payment may take some hours to reflect
-    on this site.
-  mp_payment_failure: "Your payment could not be processed by Mercado Pago"
-  mp_payment_pending: 
-    Your order has been placed but your payment is still pending we will ship
-    your order and contact you as soon as the payment is processed"
-  mp_invalid_order: "The specified order is invalid"
