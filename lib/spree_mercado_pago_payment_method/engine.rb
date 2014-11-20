@@ -1,4 +1,3 @@
-# -*- encoding : utf-8 -*-
 require 'spree_core'
 
 module SpreeMercadoPagoPaymentMethod

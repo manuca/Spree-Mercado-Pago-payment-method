@@ -28,5 +28,23 @@ module Spree
     def auto_capture?
       false
     end
+
+    ## Admin options
+
+    def can_void?(payment)
+      payment.state != 'void'
+    end
+    
+    def actions
+      %w{void}
+    end
+
+    def void(*args)
+      # FIX: Void operation doesn update order totals Spree issue #5246 
+      # response_code, gateway_options = args
+      # order_no, payment_id = gateway_options[:order_id].split("-")
+      # Order.where(number: order_no).first!.updater.update
+      ActiveMerchant::Billing::Response.new(true, "", {}, {})
+    end
   end
 end

@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 describe Spree::CheckoutController do
-
   let(:order) do
     mock_model(
       Spree::Order,
