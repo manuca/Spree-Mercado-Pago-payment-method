@@ -3,7 +3,7 @@ Spree Mercado Pago Payment Method
 
 Integration of Mercado Pago with Spree 2.3
 
-For Spree 1.3 - Take a look a spree-1.3 branch
+For Spree 1.3 - Take a look a spree-1.3 branch  
 For Spree 1.2 - Take a look a spree-1.2 branch
 
 Installation
@@ -16,7 +16,7 @@ gem 'spree_mercado_pago_payment_method', git: "git@github.com:manuca/Spree-Merca
 Usage
 -----
 
-- Add a new payment method in the admin panel of type PaymentMethod::MercadoPago
+- Add a new payment method in the admin panel of type Spree::PaymentMethod::MercadoPago
 - After adding the payment method you will be able to configure your Client ID and Client Secret (provided by Mercado Pago).
 - Once you received finished orders you must manually capture (or void) the order at least until IPN is implemented.
 
