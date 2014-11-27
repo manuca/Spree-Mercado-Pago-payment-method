@@ -4,8 +4,10 @@ MercadoPago = {
   hidePaymentSaveAndContinueButton: function(paymentMethod) {
     if (MercadoPago.paymentMethodID && paymentMethod.val() == MercadoPago.paymentMethodID) {
       $('.continue').hide();
+      $('[data-hook=coupon_code]').hide();
     } else {
       $('.continue').show();
+      $('[data-hook=coupon_code]').show();
     }
   }
 };
