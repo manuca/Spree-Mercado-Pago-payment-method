@@ -50,8 +50,12 @@ module Spree
     end
 
     def ipn
+      # Unless topic != 'payment' && id not present
+      # Serialize notification info
+      # Process notification
       notification =
-        MercadoPago::Notification.create(params[:id], params[:topic])
+        MercadoPago::Notification.create(notification_id: params[:id],
+                                         topic: params[:topic])
 
       if notification
         MercadoPago::HandleReceivedNotification.new(notification).process!
@@ -61,10 +65,6 @@ module Spree
       end
 
       render nothing: true, status: status
-
-      # Unless topic != 'payment' && id not present
-      # Serialize notification info
-      # Process notification
     end
 
     private

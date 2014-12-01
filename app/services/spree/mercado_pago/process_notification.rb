@@ -1,11 +1,28 @@
+# Payment states
+# Spree state => MP state
+# =======================
+# approved     => complete
+# pending      => pend
+# in_process   => pend
+# rejected     => failure
+# refunded     => void
+# cancelled    => void
+# in_mediation => pend
+# charged_back => void
+#
 # Process notification:
-# Fetch/check payment by external reference
+# ---------------------
+#
+# Fetch collection information
+# Find payment by external reference
 # If found
 #   Serialize collection information
-#   Check payment status
-#   Update payment status to complete state if payed and collection data as payment
-#   source
+#   Update payment status
+#   if approved assign source with collection info
 #   payment.complete!
+#   Find order associated to payment
+#   Due to Spree issue #5246 order status needs to be updated by hand
+#   @order.updater.update
 #   Notify user
 # If not found
 #   Ignore notification (maybe payment from outside Spree)
