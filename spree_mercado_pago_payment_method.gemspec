@@ -7,16 +7,17 @@ Gem::Specification.new do |s|
   s.files       = `git ls-files -- {app,config,lib,test,spec,features}/*`.split("\n")
   s.homepage    = 'https://github.com/manuca/Spree-Mercado-Pago-payment-method'
   s.email       = 'manuca@gmail.com'
+  s.license     = 'MIT'
 
-  s.add_dependency 'spree_core', '~> 2.3.0'
-  s.add_dependency 'rest-client'
+  s.add_dependency 'spree_core',  '~> 2.3'
+  s.add_dependency 'rest-client', '~> 1.7'
 
-  s.add_development_dependency 'ffaker'
-  s.add_development_dependency 'factory_girl'
-  s.add_development_dependency 'rspec-rails',  '~> 2.14.0'
-  s.add_development_dependency 'sass-rails', '~> 4.0.4'
-  s.add_development_dependency 'coffee-rails', '~> 4.1.0'
-  s.add_development_dependency 'sqlite3'
+  s.add_development_dependency 'ffaker', '~> 1.25'
+  s.add_development_dependency 'factory_girl', '~> 4.4'
+  s.add_development_dependency 'rspec-rails',  '~> 2.14'
+  s.add_development_dependency 'sass-rails', '~> 4.0'
+  s.add_development_dependency 'coffee-rails', '~> 4.1'
+  s.add_development_dependency 'sqlite3', '~> 1.3'
 
   s.test_files = Dir["spec/**/*"]
 end
