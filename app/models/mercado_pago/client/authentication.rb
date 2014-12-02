@@ -1,8 +1,10 @@
+require 'json'
+
 class MercadoPago::Client
   module Authentication
     def authenticate
       response = send_authentication_request
-      @auth_response = ActiveSupport::JSON.decode(response)
+      @auth_response = JSON.parse(response)
     rescue RestClient::Exception => e
       @errors << I18n.t(:authentication_error, scope: :mercado_pago)
       raise RuntimeError.new e.message

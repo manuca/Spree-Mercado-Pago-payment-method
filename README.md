@@ -18,7 +18,6 @@ Usage
 
 - Add a new payment method in the admin panel of type Spree::PaymentMethod::MercadoPago
 - After adding the payment method you will be able to configure your Client ID and Client Secret (provided by Mercado Pago).
-- Once you received finished orders you must manually capture (or void) the order at least until IPN is implemented.
 
 Pending Work
 ------------

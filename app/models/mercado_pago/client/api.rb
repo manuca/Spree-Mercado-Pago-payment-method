@@ -1,15 +1,17 @@
+require 'json'
+
 class MercadoPago::Client
   module API
     def redirect_url
       point_key = sandbox ? 'sandbox_init_point' : 'init_point'
-      @preferences_response[point_key]# if @preferences_response.present?
+      @preferences_response[point_key]
     end
 
     private
 
-    def notifications_url(mercado_pago_id)
+    def notifications_url(operation_id)
       sandbox_part = sandbox ? 'sandbox/' : ''
-      "https://api.mercadolibre.com/#{sandbox_part}collections/notifications/#{mercado_pago_id}"
+      "https://api.mercadolibre.com/#{sandbox_part}collections/notifications/#{operation_id}"
     end
 
     def search_url
@@ -33,7 +35,7 @@ class MercadoPago::Client
 
     def get(url, request_options={}, options={})
       response = RestClient.get(url, request_options)
-      ActiveSupport::JSON.decode(response)
+      JSON.parse(response)
     rescue => e
       raise e unless options[:quiet]
     end

@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'json'
 
 describe MercadoPago::Client do
   SPEC_ROOT = File.expand_path('../', File.dirname(__FILE__))
@@ -36,7 +37,7 @@ describe MercadoPago::Client do
         response.stub(:to_str) { login_json_response }
         response
       }
-      let(:js_response) { ActiveSupport::JSON.decode(http_response) }
+      let(:js_response) { JSON.parse(http_response) }
 
       before(:each) do
         expect(RestClient).to receive(:post).and_return( http_response )

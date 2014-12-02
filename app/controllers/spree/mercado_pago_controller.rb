@@ -1,13 +1,8 @@
 module Spree
   class MercadoPagoController < StoreController
     protect_from_forgery except: :ipn
+    skip_before_filter :set_current_order, only: :ipn
 
-    # Order must be in payment state
-    # Find payment method
-    # Create Payment for this order with current payment method
-    # Send preferences to MP
-    # Pass payment to processing state
-    # Redirect to MP init point
     def checkout
       current_order.state_name == :payment || raise(ActiveRecord::RecordNotFound)
       payment_method = PaymentMethod::MercadoPago.find(params[:payment_method_id])
@@ -28,9 +23,6 @@ module Spree
     # Success/pending callbacks are currently aliases, this may change
     # if required.
     def success
-      # Fetch payment by external reference
-      # Pass payment to pending state
-      # Flash success & redirect to order detail
       payment.pend!
       payment.order.next
       flash.notice = Spree.t(:order_processed_successfully)
@@ -39,10 +31,6 @@ module Spree
     end
 
     def failure
-      # Fetch payment by external reference
-      # Pass payment to failed state
-      # Flash error
-      # Redirect to checkout state payment
       payment.failure!
       flash.notice = Spree.t(:payment_processing_failed)
       flash['order_completed'] = true
@@ -50,14 +38,10 @@ module Spree
     end
 
     def ipn
-      # Unless topic != 'payment' && id not present
-      # Serialize notification info
-      # Process notification
-      notification =
-        MercadoPago::Notification.create(notification_id: params[:id],
-                                         topic: params[:topic])
+      notification = MercadoPago::Notification.
+        new(operation_id: params[:id], topic: params[:topic])
 
-      if notification
+      if notification.save
         MercadoPago::HandleReceivedNotification.new(notification).process!
         status = :ok
       else
