@@ -13,6 +13,13 @@ Installation
 gem 'spree_mercado_pago_payment_method', git: "git@github.com:manuca/Spree-Mercado-Pago-payment-method.git"
 ```
 
+inside your project import and migrate engine migrations:
+
+```
+rake spree_mercado_pago_payment_method_engine:install:migrations
+rake db:migrate
+```
+
 Usage
 -----
 
